@@ -36,11 +36,37 @@ class User(UserBase):
 
     class Config:
         orm_mode = True
-        schema_extra = {
-            "sample": {
-                "is_active": True,
-                "email": "testuser@api.com",
-                "id": 4,
-                "items": ["apple", "oranges"],
-            }
-        }
+
+
+class ArticleBase(BaseModel):
+    title: str
+    body: Optional[str]
+
+
+class ArticleCreate(ArticleBase):
+    author: User
+
+
+class Article(ArticleBase):
+    id: int
+    author_id: int
+
+    class Config:
+        orm_mode = True
+
+
+class CommentBase(BaseModel):
+    title: str
+    body: Optional[str]
+
+
+class CommentCreate(CommentBase):
+    author: User
+
+
+class Comment(CommentBase):
+    id: int
+    author_id: int
+
+    class Config:
+        orm_mode = True
