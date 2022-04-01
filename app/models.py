@@ -13,8 +13,8 @@ class User(Base):
     hashed_password = Column(String(255))
     is_active = Column(Boolean, default=True)
 
-    articles = relationship("Article", back_populates="author")
-    comments = relationship("Comment", back_populates="comments")
+    articles = relationship("Article", back_populates="author", cascade="all,delete")
+    comments = relationship("Comment", back_populates="author", cascade="all,delete")
 
 
 class Article(Base):
@@ -24,9 +24,9 @@ class Article(Base):
     body = Column(String(255))
     created_at = Column(DateTime(timezone=True), default=datetime.now())
     updated_at = Column(DateTime(), onupdate=datetime.now())
-    author_id = Column(Integer, ForeignKey("users.id"))
+    author_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
     author = relationship("User", back_populates="articles")
-    comments = relationship("Comment", back_populates="article")
+    comments = relationship("Comment", back_populates="article", cascade="all,delete")
 
 
 class Comment(Base):
@@ -35,7 +35,7 @@ class Comment(Base):
     title = Column(String(255))
     body = Column(String(255))
     created_at = Column(Date, default=date.today())
-    author_id = Column(Integer, ForeignKey("users.id"))
+    author_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
     author = relationship("User", back_populates="comments")
-    article_id = Column(Integer, ForeignKey("articles.id"))
+    article_id = Column(Integer, ForeignKey("articles.id", ondelete="CASCADE"))
     article = relationship("Article", back_populates="comments")

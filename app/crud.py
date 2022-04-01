@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
-
+import hashlib
 from . import models, schemas
+
+hash = hashlib.sha256()
 
 
 def get_user(db: Session, user_id: int):
@@ -16,8 +18,8 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 
 
 def create_user(db: Session, user: schemas.UserCreate):
-    fake_hashed_password = user.password + "notreallyhashed"
-    db_user = models.User(email=user.email, hashed_password=fake_hashed_password)
+    hashed_password = hash.update(user.password).hexdigest()
+    db_user = models.User(email=user.email, hashed_password=hashed_password)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -30,6 +32,18 @@ def get_items(db: Session, skip: int = 0, limit: int = 100):
 
 def create_user_item(db: Session, item: schemas.ItemCreate, user_id: int):
     db_item = models.Item(**item.dict(), owner_id=user_id)
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
+    return db_item
+
+
+def get_articles(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Article).offset(skip).limit(limit).all()
+
+
+def create_article(db: Session, item: schemas.ArticleCreate, user_id: int):
+    db_item = models.Article(**item.dict(), author_id=user_id)
     db.add(db_item)
     db.commit()
     db.refresh(db_item)

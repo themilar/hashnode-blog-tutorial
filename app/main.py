@@ -53,3 +53,19 @@ def create_item_for_user(
 def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     items = crud.get_items(db, skip=skip, limit=limit)
     return items
+
+
+@app.get("/articles/", response_model=List[schemas.Article])
+def read_articles(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    articles = crud.get_articles(db, skip=skip, limit=limit)
+    return articles
+
+
+@app.post("/users/{user_id}/articles/", response_model=schemas.Article)
+def create_article(
+    user_id: int, item: schemas.ArticleCreate, db: Session = Depends(get_db)
+):
+    return crud.create_article(db=db, item=item, user_id=user_id)
+
+
+# TODO: `DELETE AND DETAIL VIEWS`
