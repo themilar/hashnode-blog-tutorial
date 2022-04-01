@@ -44,8 +44,8 @@ def get_articles(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Article).offset(skip).limit(limit).all()
 
 
-def create_article(db: Session, item: schemas.ArticleCreate, user_id: int):
-    db_item = models.Article(**item.dict(), author_id=user_id)
+def create_article(db: Session, article: schemas.ArticleCreate, user_id: int):
+    db_item = models.Article(**article.dict(), author_id=user_id)
     db.add(db_item)
     db.commit()
     db.refresh(db_item)
