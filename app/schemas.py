@@ -44,7 +44,7 @@ class ArticleBase(BaseModel):
 
 
 class ArticleCreate(ArticleBase):
-    author: User
+    pass
 
 
 class Article(ArticleBase):
