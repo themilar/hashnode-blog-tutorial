@@ -29,18 +29,6 @@ def create_user(db: Session, user: schemas.UserCreate):
     return db_user
 
 
-def get_items(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Item).offset(skip).limit(limit).all()
-
-
-def create_user_item(db: Session, item: schemas.ItemCreate, user_id: int):
-    db_item = models.Item(**item.dict(), owner_id=user_id)
-    db.add(db_item)
-    db.commit()
-    db.refresh(db_item)
-    return db_item
-
-
 def get_articles(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Article).offset(skip).limit(limit).all()
 
@@ -54,10 +42,10 @@ def create_article(db: Session, article: schemas.ArticleCreate, user_id: int):
 
 
 def get_object_or_404(db: Session, Model: models.Base, object_id: int):
-    db_item = db.query(Model).filter(Model.id == object_id).first()
-    if db_item is None:
+    db_object = db.query(Model).filter(Model.id == object_id).first()
+    if db_object is None:
         raise HTTPException(status=404, detail="Not found")
-    return db_item
+    return db_object
 
     # db_item = (
     #     db.query(getattr(models, f"{Model}"))

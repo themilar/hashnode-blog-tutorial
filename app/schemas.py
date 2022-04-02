@@ -4,18 +4,18 @@ from typing import List, Optional
 from pydantic import BaseModel, EmailStr
 
 
-class ItemBase(BaseModel):
+class ArticleBase(BaseModel):
     title: str
-    description: Optional[str] = None
+    body: Optional[str]
 
 
-class ItemCreate(ItemBase):
+class ArticleCreate(ArticleBase):
     pass
 
 
-class Item(ItemBase):
+class Article(ArticleBase):
     id: int
-    owner_id: int
+    author_id: int
 
     class Config:
         orm_mode = True
@@ -32,24 +32,7 @@ class UserCreate(UserBase):
 class User(UserBase):
     id: int
     is_active: bool
-    items: List[Item] = []
-
-    class Config:
-        orm_mode = True
-
-
-class ArticleBase(BaseModel):
-    title: str
-    body: Optional[str]
-
-
-class ArticleCreate(ArticleBase):
-    pass
-
-
-class Article(ArticleBase):
-    id: int
-    author_id: int
+    articles: List[Article] = []
 
     class Config:
         orm_mode = True
