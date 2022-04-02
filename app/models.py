@@ -28,6 +28,9 @@ class Article(Base):
     author = relationship("User", back_populates="articles")
     comments = relationship("Comment", back_populates="article", cascade="all,delete")
 
+    def __repr__(self):
+        return f"{self.title}"
+
 
 class Comment(Base):
     __tablename__ = "comments"

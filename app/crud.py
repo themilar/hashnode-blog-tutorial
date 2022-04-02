@@ -1,3 +1,4 @@
+from http.client import HTTPException
 from sqlalchemy.orm import Session
 import hashlib
 from . import models, schemas
@@ -50,3 +51,16 @@ def create_article(db: Session, article: schemas.ArticleCreate, user_id: int):
     db.commit()
     db.refresh(db_item)
     return db_item
+
+
+def get_object_or_404(db: Session, Model: models.Base, object_id: int):
+    db_item = db.query(Model).filter(Model.id == object_id).first()
+    if db_item is None:
+        raise HTTPException(status=404, detail="Not found")
+    return db_item
+
+    # db_item = (
+    #     db.query(getattr(models, f"{Model}"))
+    #     .filter(getattr(models, f"{Model}").id == object_id)
+    #     .first()
+    # )

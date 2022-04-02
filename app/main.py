@@ -61,6 +61,11 @@ def read_articles(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
     return articles
 
 
+@app.get("/article/{article_id}", response_model=schemas.Article)
+def read_article(article_id: int, db: Session = Depends(get_db)):
+    return crud.get_object_or_404(db, models.Article, object_id=article_id)
+
+
 @app.post("/users/{user_id}/articles/", response_model=schemas.Article)
 def create_article(
     user_id: int, article: schemas.ArticleCreate, db: Session = Depends(get_db)
@@ -68,8 +73,8 @@ def create_article(
     db_user = crud.get_user(db, user_id=user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User does not exist")
-
     return crud.create_article(db=db, article=article, user_id=user_id)
 
 
 # TODO: `DELETE AND DETAIL VIEWS`
+# TODO: RESPONSE MODELS AND PROPER REST URLS
