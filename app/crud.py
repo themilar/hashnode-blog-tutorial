@@ -1,5 +1,7 @@
-from http.client import HTTPException
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import update
+
 import hashlib
 from . import models, schemas
 
@@ -44,7 +46,7 @@ def create_article(db: Session, article: schemas.ArticleCreate, user_id: int):
 def get_object_or_404(db: Session, Model: models.Base, object_id: int):
     db_object = db.query(Model).filter(Model.id == object_id).first()
     if db_object is None:
-        raise HTTPException(status=404, detail="Not found")
+        raise HTTPException(status_code=404, detail="Not found")
     return db_object
 
     # db_item = (
@@ -52,3 +54,15 @@ def get_object_or_404(db: Session, Model: models.Base, object_id: int):
     #     .filter(getattr(models, f"{Model}").id == object_id)
     #     .first()
     # )
+
+
+def update_article(db: Session, article_id: int, updated_fields: schemas.ArticleUpdate):
+    db.execute(
+        update(models.Article)
+        .where(models.Article.id == article_id)
+        .values(updated_fields.dict(exclude_unset=True))
+    )
+
+    db.flush()
+    db.commit()
+    return updated_fields

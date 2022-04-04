@@ -1,6 +1,6 @@
 import email
 from typing import List, Optional
-
+from datetime import datetime
 from pydantic import BaseModel, EmailStr
 
 
@@ -16,6 +16,16 @@ class ArticleCreate(ArticleBase):
 class Article(ArticleBase):
     id: int
     author_id: int
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config:
+        orm_mode = True
+
+
+class ArticleUpdate(BaseModel):
+    title: Optional[str]
+    body: Optional[str]
 
     class Config:
         orm_mode = True
