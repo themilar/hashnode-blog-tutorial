@@ -47,19 +47,3 @@ class User(UserBase):
     class Config:
         orm_mode = True
 
-
-class CommentBase(BaseModel):
-    title: str
-    body: Optional[str]
-
-
-class CommentCreate(CommentBase):
-    author: User
-
-
-class Comment(CommentBase):
-    id: int
-    author_id: int
-
-    class Config:
-        orm_mode = True

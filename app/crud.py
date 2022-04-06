@@ -9,7 +9,7 @@ hash = hashlib.sha256()
 
 
 def get_user(db: Session, user_id: int):
-    return db.query(models.User).filter(models.User.id == user_id).first()
+    return db.query(models.User).get(user_id)
 
 
 def get_user_by_email(db: Session, email: str):
@@ -49,12 +49,6 @@ def get_object_or_404(db: Session, Model: models.Base, object_id: int):
         raise HTTPException(status_code=404, detail="Not found")
     return db_object
 
-    # db_item = (
-    #     db.query(getattr(models, f"{Model}"))
-    #     .filter(getattr(models, f"{Model}").id == object_id)
-    #     .first()
-    # )
-
 
 def update_article(db: Session, article_id: int, updated_fields: schemas.ArticleUpdate):
     db.execute(
@@ -66,3 +60,8 @@ def update_article(db: Session, article_id: int, updated_fields: schemas.Article
     db.flush()
     db.commit()
     return updated_fields
+
+
+def delete_article(db: Session, article: schemas.Article):
+    db.delete(article)
+    db.commit()

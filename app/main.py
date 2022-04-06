@@ -6,7 +6,6 @@ from sqlalchemy.orm import Session
 from . import crud, models, schemas
 from .database import SessionLocal, engine
 
-models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -58,7 +57,7 @@ def read_article(article_id: int, db: Session = Depends(get_db)):
     response_model=schemas.Article,
     status_code=status.HTTP_201_CREATED,
 )
-def create_article_for_user(
+def create_user_article(
     user_id: int, article: schemas.ArticleCreate, db: Session = Depends(get_db)
 ):
     db_user = crud.get_user(db, user_id=user_id)
@@ -70,8 +69,7 @@ def create_article_for_user(
 @app.delete("/articles/{article_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_article(article_id: int, db: Session = Depends(get_db)):
     article = crud.get_object_or_404(db, models.Article, article_id)
-    db.delete(article)
-    db.commit()
+    return crud.delete_article(db=db,article=article)
 
 
 @app.patch("/articles/{article_id}", response_model=schemas.ArticleUpdate)
@@ -81,7 +79,3 @@ def update_article(
     db: Session = Depends(get_db),
 ):
     return crud.update_article(db, article_id, updated_fields)
-
-
-# TODO: `DELETE AND DETAIL VIEWS`
-# TODO: RESPONSE MODELS AND PROPER REST URLS

@@ -1,5 +1,5 @@
-from datetime import datetime, date
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Date
+from datetime import datetime
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 
 from .database import Base
@@ -14,31 +14,20 @@ class User(Base):
     is_active = Column(Boolean, default=True)
 
     articles = relationship("Article", back_populates="author", cascade="all,delete")
-    comments = relationship("Comment", back_populates="author", cascade="all,delete")
+
+    def __repr__(self):
+        return f"{self.email}"
 
 
 class Article(Base):
     __tablename__ = "articles"
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(255))
+    title = Column(String(50))
     body = Column(String(255))
-    created_at = Column(DateTime(timezone=True), default=datetime.now())
+    created_at = Column(DateTime(), default=datetime.now())
     updated_at = Column(DateTime(), onupdate=datetime.now())
     author_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
     author = relationship("User", back_populates="articles")
-    comments = relationship("Comment", back_populates="article", cascade="all,delete")
 
     def __repr__(self):
         return f"{self.title}"
-
-
-class Comment(Base):
-    __tablename__ = "comments"
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(255))
-    body = Column(String(255))
-    created_at = Column(Date, default=date.today())
-    author_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
-    author = relationship("User", back_populates="comments")
-    article_id = Column(Integer, ForeignKey("articles.id", ondelete="CASCADE"))
-    article = relationship("Article", back_populates="comments")
