@@ -1,3 +1,3 @@
-# median
+# hashnode tutorial
 
 FastAPI demo app
